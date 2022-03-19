@@ -12,14 +12,12 @@ public class MovieSearch {
     static Statement statement;
 
     public static void main(String[] args) {
-        sqlServer="jdbc:sqlite:";
-        filePath="C:\\Users\\germa\\Documents\\JavaPrograms\\MoviesLove\\database\\moveisDB.db";
-
+        sqlServer = "jdbc:sqlite:";
         getFilePath = new File("").getAbsolutePath();
         filePath = getFilePath.concat("\\database\\moviesDB.db");
-        jdbcUrl = sqlServer+filePath;
+        jdbcUrl = sqlServer + filePath;
 
-        if(!dbExist(filePath)){
+        if (!dbExist(filePath)) {
             createDbfile("moviesDB");
         }
 
@@ -61,16 +59,16 @@ public class MovieSearch {
                         break;
 
                     case 7:
-                        query="SELECT * FROM moviesinfo;";
+                        query = "SELECT * FROM moviesinfo;";
                         break;
 
                     default:
                         System.out.printf("Enter a valid input");
-                        ch=1;
+                        ch = 1;
                 }
-                if(ch>1){
+                if (ch > 1) {
                     resultSet = statement.executeQuery(query);
-                    try{
+                    try {
                         resultSet.getString("moviename");
                         display();
 
@@ -82,23 +80,21 @@ public class MovieSearch {
                             director = resultSet.getString("director");
                             display(movName, actor, actress, director, year);
                         }
-                    }
-                    catch (Exception e){
+                    } catch (Exception e) {
                         System.out.println("No result found!!");
                     }
                 }
                 System.out.println();
-            }while(ch!=0);
-        }
-        catch (Exception e){
+            } while (ch != 0);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private static void createDbfile(String moviesDB) {
         getFilePath = new File("").getAbsolutePath();
-        filePath=getFilePath.concat("\\database\\" + moviesDB + ".db");
-        query="CREATE TABLE moviesinfo(" +
+        filePath = getFilePath.concat("\\database\\" + moviesDB + ".db");
+        query = "CREATE TABLE moviesinfo(" +
                 "id INTEGER NOT NULL," +
                 "moviename TEXT NOT NULL," +
                 "leadactor TEXT NOT NULL," +
@@ -107,13 +103,12 @@ public class MovieSearch {
                 "yearofrelease TEXT NOT NULL," +
                 "PRIMARY KEY(id)" +
                 ");";
-        jdbcUrl=sqlServer+filePath;
+        jdbcUrl = sqlServer + filePath;
         try {
             Connection connection = DriverManager.getConnection(jdbcUrl);
             Statement statement = connection.createStatement();
             statement.execute(query);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -124,22 +119,23 @@ public class MovieSearch {
     }
 
     private static void searchDuo() {
-        String x,y;
+        String x, y;
         System.out.print("Enter the Actor's Name: ");
         sc.nextLine();
-        x= sc.nextLine();
+        x = sc.nextLine();
         System.out.print("Entert he Actress' Name: ");
-        y= sc.nextLine();
-        query="SELECT * FROM moviesinfo WHERE leadactor LIKE '%" + x + "%' AND leadactress LIKE '%" + y + "%';";
+        y = sc.nextLine();
+        query = "SELECT * FROM moviesinfo WHERE leadactor LIKE '%" + x + "%' AND leadactress LIKE '%" + y + "%';";
     }
 
     private static void display(String movName, String actor, String actress, String director, String year) {
-        System.out.format("%-30s %-25s %-25s %-44s %-12s",movName,actor,actress,director,year);
+        System.out.format("%-30s %-25s %-25s %-44s %-12s", movName, actor, actress, director, year);
         System.out.println();
     }
 
     private static void display() {
-        System.out.printf("%-30s %-25s %-25s %-44s %-16s","Movie Name","Actor","Actress","Director(s)","Release Year");
+        System.out.printf("%-30s %-25s %-25s %-44s %-16s", "Movie Name", "Actor", "Actress", "Director(s)",
+                "Release Year");
         System.out.println();
         System.out.println("============================================================================" +
                 "=================================================================");
@@ -147,25 +143,22 @@ public class MovieSearch {
 
     private static void search(int x) {
         String y;
-        if (x==1) {
+        if (x == 1) {
             System.out.print("Enter the Actor's name: ");
             q = "leadactor";
-        }
-        else if(x==2){
+        } else if (x == 2) {
             System.out.print("Enter the Actress' name: ");
             q = "leadactress";
-        }
-        else if(x==3){
+        } else if (x == 3) {
             System.out.print("Enter the Movie name: ");
             q = "moviename";
-        }
-        else{
+        } else {
             System.out.print("Enter the Movie Release year: ");
             q = "yearofrelease";
         }
         sc.nextLine();
-        y=sc.nextLine();
-        query="SELECT * FROM moviesinfo WHERE " + q + " LIKE '%" + y + "%';";
+        y = sc.nextLine();
+        query = "SELECT * FROM moviesinfo WHERE " + q + " LIKE '%" + y + "%';";
     }
 
     private static int menu() {
@@ -184,16 +177,17 @@ public class MovieSearch {
     private static void enterData() {
         System.out.print("Enter the Movie Name: ");
         sc.nextLine();
-        movName=sc.nextLine();
+        movName = sc.nextLine();
         System.out.print("Enter the Lead Actor's Name: ");
-        actor= sc.nextLine();
+        actor = sc.nextLine();
         System.out.print("Enter the Lead Actress' Name: ");
-        actress=sc.nextLine();
+        actress = sc.nextLine();
         System.out.print("Enter the Director's Name: ");
-        director=sc.nextLine();
+        director = sc.nextLine();
         System.out.print("Enter the Year of Release: ");
-        year=sc.next();
+        year = sc.next();
 
-        query="INSERT INTO moviesinfo(moviename,leadactor,leadactress,director,yearofrelease) VALUES('" + movName + "','" + actor + "','" + actress + "','" + director + "','" + year + "');";
+        query = "INSERT INTO moviesinfo(moviename,leadactor,leadactress,director,yearofrelease) VALUES('" + movName
+                + "','" + actor + "','" + actress + "','" + director + "','" + year + "');";
     }
 }
