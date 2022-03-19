@@ -5,19 +5,23 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class MovieSearch {
-
-    static String movName, actor, actress, director, year, q, query;
+    static String movName, actor, actress, director, year, q, query, sqlServer, getFilePath, filePath, jdbcUrl;
     static Scanner sc = new Scanner(System.in);
     static int ch;
     static ResultSet resultSet;
     static Statement statement;
 
     public static void main(String[] args) {
-        File file = new File("C:\\Users\\germa\\Documents\\JavaPrograms\\MoviesLove\\moviesDB.db");
-        if(!file.exists()){
+        sqlServer="jdbc:sqlite:";
+        filePath="C:\\Users\\germa\\Documents\\JavaPrograms\\MoviesLove\\database\\moveisDB.db";
 
+        getFilePath = new File("").getAbsolutePath();
+        filePath = getFilePath.concat("\\database\\moviesDB.db");
+        jdbcUrl = sqlServer+filePath;
+
+        if(!dbExist(filePath)){
+            createDbfile("moviesDB");
         }
-        String jdbcUrl="jdbc:sqlite:/C:\\Users\\germa\\Documents\\JavaPrograms\\MoviesLove\\moviesDB.db";
 
         try {
             Connection connection = DriverManager.getConnection(jdbcUrl);
@@ -79,9 +83,9 @@ public class MovieSearch {
                             display(movName, actor, actress, director, year);
                         }
                     }
-                   catch (Exception e){
+                    catch (Exception e){
                         System.out.println("No result found!!");
-                   }
+                    }
                 }
                 System.out.println();
             }while(ch!=0);
@@ -89,6 +93,34 @@ public class MovieSearch {
         catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    private static void createDbfile(String moviesDB) {
+        getFilePath = new File("").getAbsolutePath();
+        filePath=getFilePath.concat("\\database\\" + moviesDB + ".db");
+        query="CREATE TABLE moviesinfo(" +
+                "id INTEGER NOT NULL," +
+                "moviename TEXT NOT NULL," +
+                "leadactor TEXT NOT NULL," +
+                "leadactress TEXT NOT NULL," +
+                "director TEXT," +
+                "yearofrelease TEXT NOT NULL," +
+                "PRIMARY KEY(id)" +
+                ");";
+        jdbcUrl=sqlServer+filePath;
+        try {
+            Connection connection = DriverManager.getConnection(jdbcUrl);
+            Statement statement = connection.createStatement();
+            statement.execute(query);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private static boolean dbExist(String filePath) {
+        File dbFile = new File(filePath);
+        return dbFile.exists();
     }
 
     private static void searchDuo() {
@@ -109,7 +141,8 @@ public class MovieSearch {
     private static void display() {
         System.out.printf("%-30s %-25s %-25s %-44s %-16s","Movie Name","Actor","Actress","Director(s)","Release Year");
         System.out.println();
-        System.out.println("==================================================================================================================================================");
+        System.out.println("============================================================================" +
+                "=================================================================");
     }
 
     private static void search(int x) {
